@@ -1,0 +1,26 @@
+{
+  "name": "unplggd",
+  "version": "0.0.1",
+  "description": "The Git based page / blog engine.",
+  "main": "index.js",
+  "repository": "https://github.com/unplggd/unplggd.git",
+  "author": "havoc <madhu.dj@gmail.com>",
+  "license": "LicenseRef-LICENSE",
+  "dependencies": {
+    "axios": "^0.16.2",
+    "body-parser": "^1.17.2",
+    "compression": "^1.6.2",
+    "express": "^4.15.3",
+    "kue": "^0.11.6",
+    "nuxt": "latest",
+    "throng": "^4.0.0"
+  },
+  "scripts": {
+    "dev": "node web.js",
+    "start": "nf start"
+  },
+  "devDependencies": {
+    "backpack-core": "^0.4.0-rc1",
+    "foreman": "^2.0.0"
+  }
+}
