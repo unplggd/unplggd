@@ -20,7 +20,7 @@
     "start": "nf start"
   },
   "devDependencies": {
-    "backpack-core": "^0.4.0-rc1",
+    "backpack-core": "^0.4.1",
     "foreman": "^2.0.0"
   }
 }
