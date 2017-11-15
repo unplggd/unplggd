@@ -13,7 +13,7 @@
     import axios from 'axios'
 
     export default {
-        asyncData ({req, params}) {
+        asyncData({req, params}) {
             // We can return a Promise instead of calling the callback
             let name = req ? 'server' : 'client'
             return axios.get('https://raw.githubusercontent.com/unplggd/unplggd-source/master/posts/2017/05/one/index.md')

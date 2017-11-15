@@ -5,22 +5,23 @@
   "main": "index.js",
   "repository": "https://github.com/unplggd/unplggd.git",
   "author": "havoc <madhu.dj@gmail.com>",
-  "license": "LicenseRef-LICENSE",
+  "private": "true",
   "dependencies": {
     "axios": "^0.16.2",
     "body-parser": "^1.17.2",
-    "compression": "^1.6.2",
-    "express": "^4.15.3",
+    "compression": "^1.7.0",
+    "express": "^4.15.4",
     "kue": "^0.11.6",
-    "nuxt": "latest",
+    "nuxt": "^1.0.0-rc11",
     "throng": "^4.0.0"
   },
   "scripts": {
-    "dev": "node web.js",
+    "dev": "backpack",
+    "build": "backpack build",
     "start": "nf start"
   },
   "devDependencies": {
-    "backpack-core": "^0.4.1",
+    "backpack-core": "^0.4.2",
     "foreman": "^2.0.0"
   }
 }

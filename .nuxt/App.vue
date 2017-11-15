@@ -1,21 +1,24 @@
 <template>
   <div id="__nuxt">
     <nuxt-loading ref="loading"></nuxt-loading>
-    <component v-if="layout" :is="layout"></component>
+    <component v-if="layout" :is="nuxt.err ? 'nuxt' : layout"></component>
   </div>
 </template>
 
 <script>
+import Vue from 'vue'
 import NuxtLoading from './components/nuxt-loading.vue'
 
-import '~assets/css/main.css'
+import '../assets/css/main.css'
 
 
 let layouts = {
 
-  "_default": () => import('/Users/nomad/Projects/havoc/unlpggd/app/node_modules/nuxt/dist/app/layouts/default.vue'  /* webpackChunkName: "layouts/default" */)
+  "_default": () => import('./layouts/default.vue'  /* webpackChunkName: "layouts/default" */).then(m => m.default || m)
 
 }
+
+let resolvedLayouts = {}
 
 export default {
   head: {"title":"Unplggd","titleTemplate":"%s - Nuxt.js","meta":[{"charset":"utf-8"},{"name":"viewport","content":"width=device-width, initial-scale=1"},{"hid":"description","content":"Nuxt.js project"}],"script":[{"src":"https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.1/jquery.slim.min.js"},{"src":"https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js"}],"link":[{"rel":"icon","type":"image/x-icon","href":"favicon.ico"},{"rel":"stylesheet","href":"https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css"}],"style":[]},
@@ -23,36 +26,59 @@ export default {
     layout: null,
     layoutName: ''
   }),
+  beforeCreate () {
+    Vue.util.defineReactive(this, 'nuxt', this.$options._nuxt)
+  },
+  created () {
+    // Add this.$nuxt in child instances
+    Vue.prototype.$nuxt = this
+    // add to window so we can listen when ready
+    if (typeof window !== 'undefined') {
+      window.$nuxt = this
+    }
+    // Add $nuxt.error()
+    this.error = this.nuxt.error
+  },
   
   mounted () {
     this.$loading = this.$refs.loading
-    this.$nuxt.$loading = this.$loading
+  },
+  watch: {
+    'nuxt.err': 'errorChanged'
   },
   
   methods: {
+    
+    errorChanged () {
+      if (this.nuxt.err && this.$loading) {
+        if (this.$loading.fail) this.$loading.fail()
+        if (this.$loading.finish) this.$loading.finish()
+      }
+    },
+    
     setLayout (layout) {
-      if (!layout || !layouts['_' + layout]) layout = 'default'
+      if (!layout || !resolvedLayouts['_' + layout]) layout = 'default'
       this.layoutName = layout
       let _layout = '_' + layout
-      this.layout = layouts[_layout]
+      this.layout = resolvedLayouts[_layout]
       return this.layout
     },
     loadLayout (layout) {
-      if (!layout || !layouts['_' + layout]) layout = 'default'
+      if (!layout || !(layouts['_' + layout] || resolvedLayouts['_' + layout])) layout = 'default'
       let _layout = '_' + layout
-      if (typeof layouts[_layout] !== 'function') {
-        return Promise.resolve(layouts[_layout])
+      if (resolvedLayouts[_layout]) {
+        return Promise.resolve(resolvedLayouts[_layout])
       }
       return layouts[_layout]()
       .then((Component) => {
-        layouts[_layout] = Component
-        return layouts[_layout]
+        resolvedLayouts[_layout] = Component
+        delete layouts[_layout]
+        return resolvedLayouts[_layout]
       })
       .catch((e) => {
         if (this.$nuxt) {
           return this.$nuxt.error({ statusCode: 500, message: e.message })
         }
-        console.error(e)
       })
     }
   },

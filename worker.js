@@ -18,9 +18,17 @@ function startWorker(id) {
     console.log(`Started worker ${id}`)
 
     process.on('SIGTERM', () => {
-        console.log(`Worker ${id} exiting...`)
-        console.log('(cleanup would happen here)')
-        process.exit();
+        cleanUp()
+        process.exit()
     })
+
+    process.on('SIGINT', () => {
+        cleanUp()
+        process.exit()
+    })
+
 }
 
+function cleanUp() {
+    console.log('(cleanup would happen here)')
+}

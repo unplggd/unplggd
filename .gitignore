@@ -50,3 +50,10 @@ jspm_packages
 .tmp/
 
 .env
+
+# Nuxt build
+.nuxt/
+
+# Nuxt generate
+dist
+build
